@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
+	<p:panel id="pnlIncluir"
+		header="#{campeonato.id eq null? 'Novo' : 'Edita'} Campeonatos"
+		style="margin-bottom:10px;" toggleable="false">
+
+		<h:panelGrid columns="2" columnClasses="c1, c2">
+			<h:outputText value="Nome" />
+			<h:inputText value="#{campeonato.entidade.nome}"
+				disabled="#{campeonato.exibirSelecionaParticipantes}" />
+
+			<h:outputText value="Tipo de Campeonato" />
+			<h:selectOneMenu
+				value="#{campeonato.entidade.tipoCampeonato.id}"
+				valueChangeListener="#{campeonato.alteraTipoCampeonato}"
+				disabled="#{campeonato.exibirSelecionaParticipantes}">
+				<f:selectItems value="#{campeonato.lstTipoCampeonato}" var="tc"
+					itemLabel="#{tc.descricao}" itemValue="#{tc.id}" />
+				<f:ajax event="change" render="pnlGrupos" />
+			</h:selectOneMenu>
+
+		</h:panelGrid>
+
+		<h:panelGrid columns="2" id="pnlGrupos" columnClasses="c1, c2">
+			<h:outputText value="Quantidade de grupos"
+				rendered="#{campeonato.exibirDadosGrupo}" />
+			<p:inputMask mask="?9" maxlength="1" size="1"
+				value="#{campeonato.entidade.qtdGrupos}"
+				rendered="#{campeonato.exibirDadosGrupo}"
+				disabled="#{campeonato.exibirSelecionaParticipantes}" />
+
+			<h:outputText value="Participantes Classificados por Grupo"
+				rendered="#{campeonato.exibirDadosGrupo}"
+				disabled="#{campeonato.exibirSelecionaParticipantes}" />
+			<p:inputMask mask="?9" maxlength="1" size="1"
+				value="#{campeonato.entidade.qtdClassificados}"
+				rendered="#{campeonato.exibirDadosGrupo}"
+				disabled="#{campeonato.exibirSelecionaParticipantes}" />
+		</h:panelGrid>
+
+		<h:panelGrid columns="2">
+			<p:commandButton value="Salvar" action="#{campeonato.salvar}"
+				ajax="false" />
+			<p:commandButton value="Cancelar" action="#{campeonato.cancelar}"
+				ajax="false" immediate="true" />
+		</h:panelGrid>
+
+	</p:panel>
+</ui:composition>

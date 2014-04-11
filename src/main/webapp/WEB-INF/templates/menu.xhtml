@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
+	<p:menu style="width:200px" >
+		<p:submenu>
+			<p:menuitem value="Usuário" url="/pages/usuario.jsf" />
+		</p:submenu>
+		
+		<p:submenu>
+			<p:menuitem value="País" url="/pages/pais.jsf" />
+		</p:submenu>
+		
+		<p:submenu>
+			<p:menuitem value="Time" url="/pages/time.jsf" />
+		</p:submenu>
+		
+		<p:submenu>
+			<p:menuitem value="Participante" url="/pages/participante.jsf" />
+		</p:submenu>
+		
+		<p:submenu>
+			<p:menuitem value="Partida" url="/pages/partida.jsf" />
+		</p:submenu>
+		
+		<p:submenu>
+			<p:submenu label="Campeonato">
+				<p:menuitem value="Listar" url="/pages/campeonato.jsf"/>
+				<p:menuitem value="Tabela" />
+			</p:submenu>
+		</p:submenu>
+		
+	</p:menu>
+</ui:composition>

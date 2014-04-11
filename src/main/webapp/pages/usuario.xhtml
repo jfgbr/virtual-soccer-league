@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	template="/WEB-INF/templates/template.xhtml">
+	<ui:define name="content">
+		<p:growl id="growl" life="2000" showDetail="false" />
+		<h:panelGroup rendered="#{usuario.estado.incluir or usuario.estado.alterar}">
+			<ui:include src="/pages/usuarioEditar.xhtml" />
+		</h:panelGroup>
+		<h:panelGroup rendered="#{usuario.estado.listar}">
+			<ui:include src="/pages/usuarioListar.xhtml" />
+		</h:panelGroup>
+	</ui:define>
+</ui:composition>

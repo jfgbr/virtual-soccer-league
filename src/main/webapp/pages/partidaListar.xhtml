@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
+
+	<p:panel id="pnlListar" header="Partidas" toggleable="false">
+		<h:panelGrid columns="1">
+			<p:commandButton value="#{messages['geral.novo']}" update="content"
+				action="#{partida.novo}" image="ui-icon ui-icon-document"
+				title="#{messages['geral.novo']}" />
+
+			<h:selectOneMenu style="width:auto"
+				valueChangeListener="#{partida.obterListaDeCampeonatos}">
+				<f:selectItem itemLabel="Todas" itemValue="0" />
+				<f:selectItems value="#{partida.lstCampeonatos}" var="c"
+					itemLabel="#{c.nome}" itemValue="#{c.id}" />
+				<f:ajax event="change" render="content" />
+			</h:selectOneMenu>
+
+			<p:dataTable value="#{partida.dataModel}" var="item"
+				styleClass="tabelas" paginator="true" rows="5" lazy="true"
+				paginatorPosition="bottom"
+				paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+				rowsPerPageTemplate="5,10,15">
+
+				<p:columnGroup type="header">
+					<p:row>
+						<p:column colspan="2" headerText="Mandante" />
+						<p:column rowspan="2" headerText="Placar" />
+						<p:column colspan="2" headerText="Visitante" />
+						<p:column rowspan="2" headerText="Tipo da Partida" />
+						<p:column rowspan="2" headerText="" />
+					</p:row>
+
+					<p:row>
+						<p:column colspan="1" headerText="Nome" />
+						<p:column colspan="1" headerText="Time" />
+						<p:column colspan="1" headerText="Time" />
+						<p:column colspan="1" headerText="Nome" />
+					</p:row>
+				</p:columnGroup>
+
+				<p:column>
+					<h:outputText value="#{item.mandante.usuario.nome}" />
+				</p:column>
+
+				<p:column>
+					<h:outputText value="#{item.mandante.time.nome}" />
+				</p:column>
+
+				<p:column style="text-align:center;">
+					<h:outputText value="#{item.golsMandante} X #{item.golsVisitante}" />
+				</p:column>
+
+				<p:column>
+					<h:outputText value="#{item.visitante.time.nome}" />
+				</p:column>
+
+				<p:column>
+					<h:outputText value="#{item.visitante.usuario.nome}" />
+				</p:column>
+
+				<p:column style="width:auto">
+					<h:outputText value="#{item.mandante.campeonato.nome} - "
+						rendered="#{item.mandante.campeonato.id gt 1}"
+						style="white-space: nowrap;" />
+					<h:outputText value="#{item.tipoPartida.descricao}" />
+				</p:column>
+
+				<p:column styleClass="btnColunaAcoes">
+					<p:commandButton action="#{partida.alterar}" update="content"
+						image="ui-icon ui-icon-plusthick" style="font-size:6pt;" />
+					<h:outputText value=" " />
+					<p:commandButton action="#{partida.remover}" update="content"
+						image="ui-icon ui-icon-closethick" style="font-size:6pt;"
+						disabled="#{not empty item.golsMandante or not empty item.golsVisitante}" />
+				</p:column>
+
+			</p:dataTable>
+		</h:panelGrid>
+	</p:panel>
+</ui:composition>

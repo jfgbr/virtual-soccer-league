@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
+	<p:panel id="pnlIncluir"
+		header="#{partida.id eq null? 'Novo' : 'Edita'} Partida"
+		style="margin-bottom:10px;" toggleable="false">
+		
+		<h:panelGrid columns="6">
+			<h:selectOneMenu style="width:100px" value="#{partida.entidade.mandante.usuario.id}"
+				disabled="#{partida.estado.alterar}">
+				<f:selectItems value="#{usuario.listaEntidades}" var="u"
+					itemLabel="#{u.nome}" itemValue="#{u.id}" />
+			</h:selectOneMenu>
+			
+			<h:selectOneMenu value="#{partida.entidade.mandante.time.id}"
+				disabled="#{partida.estado.alterar}">
+				<f:selectItems value="#{time.listaEntidades}" var="t"
+					itemLabel="#{t.nome} (#{t.pais.sigla})" itemValue="#{t.id}" />
+			</h:selectOneMenu>
+			
+			<h:column style="text-align:center;">
+				<h:inputText maxlength="2" value="#{partida.entidade.golsMandante}" style="width : 18px;"/>
+			  	<h:outputText value=" X "/>
+			  	<h:inputText maxlength="2" value="#{partida.entidade.golsVisitante}" style="width : 18px;"/>
+			</h:column>			
+			
+			<h:selectOneMenu value="#{partida.entidade.visitante.time.id}"
+				disabled="#{partida.estado.alterar}">
+				<f:selectItems value="#{time.listaEntidades}" var="t"
+					itemLabel="#{t.nome} (#{t.pais.sigla})" itemValue="#{t.id}" />
+			</h:selectOneMenu>
+			
+			<h:selectOneMenu style="width:100px" value="#{partida.entidade.visitante.usuario.id}"
+				disabled="#{partida.estado.alterar}">
+				<f:selectItems value="#{usuario.listaEntidades}" var="u"
+					itemLabel="#{u.nome}" itemValue="#{u.id}" />
+			</h:selectOneMenu>
+			
+			<h:column style="width:50px">
+				<p:calendar  value="#{partida.entidade.dataPartida}" inputStyle="width:85px" pattern="dd/MM/yyyy" />
+			</h:column>
+    	</h:panelGrid>
+		
+		<h:panelGrid columns="2">
+			<p:commandButton value="Salvar" action="#{partida.salvar}"
+				ajax="false" />
+			<p:commandButton value="Cancelar" action="#{partida.cancelar}"
+				ajax="false" immediate="true" />
+		</h:panelGrid>
+		
+	</p:panel>
+</ui:composition>

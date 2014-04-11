@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+	<title>Application</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<h:outputStylesheet name="css/screen.css" />
+	<link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/themes/dark-hive/skin.css" />
+	<ui:insert name="styles" />
+</h:head>
+<h:body>
+	<p:layout fullPage="true">
+	
+		<p:layoutUnit position="top" height="85">
+			<h:panelGroup id="header" layout="block" class="ui-widget ui-widget-header">
+        		<h1><h:link outcome="/home.jsf" value="CampFut Virtual" style="text-decoration: none"/></h1>
+        	</h:panelGroup>
+		</p:layoutUnit>
+		
+		<p:layoutUnit position="bottom" height="40">
+			<h:panelGroup id="footer" layout="block">#{messages.footerText}</h:panelGroup>
+		</p:layoutUnit>
+		
+		<p:layoutUnit position="center" scrollable="true">
+			<h:form prependId="false">
+				<h:panelGrid columns="3" width="100%" columnClasses="sidebar,linha,content">
+					<h:panelGroup id="sidebar" layout="block">
+						<ui:include src="menu.xhtml" />
+					</h:panelGroup>
+					<h:panelGroup id="linha" style="min-height: 400px;" layout="block"/>
+					<h:panelGroup id="content" layout="block">
+						<ui:insert name="content">Main Content</ui:insert>
+					</h:panelGroup>
+				</h:panelGrid>
+			</h:form>
+		</p:layoutUnit>
+			
+				
+	</p:layout>				
+</h:body>
+</html>

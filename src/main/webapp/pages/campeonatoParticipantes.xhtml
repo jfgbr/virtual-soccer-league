@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
+	
+	<p:panel id="pnlCampeonatoSelecionado"
+		header="Escolha os usuários e os times para o campeonato: #{campeonato.entidade.nome}"
+		style="margin-top:10px;" toggleable="false">
+			<h:panelGrid columns="4">
+				<h:panelGroup>
+					<h:outputText value="Selecionar usuários" />
+					<br />
+					<p:pickList value="#{campeonato.usuarios}" var="item"
+						converter="usuarioConverter" itemLabel="#{item.nome}"
+						itemValue="#{item}" iconOnly="true">
+					</p:pickList>
+				</h:panelGroup>
+				<h:panelGroup>
+					<h:outputText value="Selecionar times" />
+					<br />
+					<p:pickList value="#{campeonato.times}" var="item"
+						converter="timeConverter" itemLabel="#{item.nome}"
+						itemValue="#{item}" iconOnly="true">
+					</p:pickList>
+				</h:panelGroup>
+			</h:panelGrid>
+
+			<br />
+			<h:panelGrid columns="2">
+				<h:outputText value="Sorteia os times entre os usuários" />
+				<h:selectBooleanCheckbox value="#{campeonato.sorteia}" />
+			</h:panelGrid>
+			
+			<h:panelGrid columns="2">
+				<p:commandButton value="Concluir" ajax="false"
+					action="#{campeonato.defineParticipantes}"
+					title="Concluir a escolha dos usuários">
+				</p:commandButton>
+				<p:commandButton value="Cancelar" update="content"
+					action="#{campeonato.listar}" ajax="false" title="Cancelar">
+				</p:commandButton>
+			</h:panelGrid>
+
+	</p:panel>
+</ui:composition>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
+
+	<p:panel id="pnlTabela"
+		header="Tabela do Campeonato - #{campeonato.entidade.nome}"
+		toggleable="false">
+		<p:dataGrid value="#{campeonato.grupos}" var="grupo" columns="1" >
+			<p:column>
+				<p:dataTable value="#{grupo.lstParticipantes}" var="item"
+					style="width:860px;text-align:center" rowIndexVar="row"
+					rowStyleClass="#{row lt campeonato.entidade.qtdClassificados ? 'classificados' : null}">					
+					<f:facet name="header">
+						<h:outputText value="#{grupo.descricao}" />
+					</f:facet>
+					<p:column style="width:20px">
+						<h:outputText value="#{row+1}" />
+					</p:column>
+					<p:column style="width:150px;text-align:right">
+						<f:facet name="header">
+							<h:outputText value="Participante" />
+						</f:facet>
+						<h:outputText value="#{item.usuario.nome} (#{item.time.nome})" />
+					</p:column>
+					<p:column style="width:20px">
+						<f:facet name="header">
+							<h:outputText value="P" />
+						</f:facet>
+						<h:outputText value="#{item.pontos}" />
+					</p:column>
+					<p:column style="width:20px">
+						<f:facet name="header">
+							<h:outputText value="J" />
+						</f:facet>
+						<h:outputText value="#{item.numeroJogos}" />
+					</p:column>
+					<p:column style="width:20px">
+						<f:facet name="header">
+							<h:outputText value="V" />
+						</f:facet>
+						<h:outputText value="#{item.vitorias}" />
+					</p:column>
+					<p:column style="width:20px">
+						<f:facet name="header">
+							<h:outputText value="E" />
+						</f:facet>
+						<h:outputText value="#{item.empates}" />
+					</p:column>
+					<p:column style="width:20px">
+						<f:facet name="header">
+							<h:outputText value="D" />
+						</f:facet>
+						<h:outputText value="#{item.derrotas}" />
+					</p:column>
+					<p:column style="width:20px">
+						<f:facet name="header">
+							<h:outputText value="GP" />
+						</f:facet>
+						<h:outputText value="#{item.golsPro}" />
+					</p:column>
+					<p:column style="width:20px">
+						<f:facet name="header">
+							<h:outputText value="GC" />
+						</f:facet>
+						<h:outputText value="#{item.golsContra}" />
+					</p:column>
+					<p:column style="width:20px">
+						<f:facet name="header">
+							<h:outputText value="GS" />
+						</f:facet>
+						<h:outputText value="#{item.saldoGols}" />
+					</p:column>
+					<p:column style="width:40px">
+						<f:facet name="header">
+							<h:outputText value="%" />
+						</f:facet>
+						<h:outputText value="#{item.percentualAproveitamento}">
+							<f:convertNumber maxFractionDigits="2"/>
+						</h:outputText>
+					</p:column>
+				</p:dataTable>
+			</p:column>
+		</p:dataGrid>
+	</p:panel>
+
+</ui:composition>

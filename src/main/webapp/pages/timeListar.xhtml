@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
+
+	<p:panel id="pnlListar" header="Times" toggleable="false">
+		<h:panelGrid columns="1">
+			<p:commandButton value="#{messages['geral.novo']}" update="content"
+				action="#{time.novo}" image="ui-icon ui-icon-document" title="#{messages['geral.novo']}"/>
+			
+			<p:dataTable value="#{time.dataModel}" var="item" styleClass="tabelas"
+				paginator="true" rows="5" lazy="true"
+				paginatorPosition="bottom"
+				paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+				rowsPerPageTemplate="5,10,15">
+				
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Nome" />
+					</f:facet>
+					<h:outputText value="#{item.nome}" />
+				</p:column>
+				
+				<p:column styleClass="timeSigla">
+					<f:facet name="header">
+						<h:outputText value="Sigla" />
+					</f:facet>
+					<h:outputText value="#{item.sigla}" />
+				</p:column>
+				
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="País" />
+					</f:facet>
+					<h:outputText value="#{item.pais.nome}" />
+				</p:column>
+				
+				<p:column styleClass="btnColunaAcoes">
+					<p:commandButton action="#{time.alterar}" update="content"
+						image="ui-icon ui-icon-plusthick" style="font-size:6pt;" />
+					<h:outputText value=" " />
+					<p:commandButton action="#{time.remover}" update="content"
+						image="ui-icon ui-icon-closethick" style="font-size:6pt;" 
+						disabled="#{not empty item.participantes}"/>
+				</p:column>
+				
+			</p:dataTable>
+		</h:panelGrid>
+	</p:panel>
+</ui:composition>

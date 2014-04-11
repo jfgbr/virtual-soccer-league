@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	template="/WEB-INF/templates/template.xhtml">
+	<ui:define name="styles">
+		<style type="text/css">
+			.c1{
+				width: 250px;
+			}
+			.c2{
+				width: 250px;
+			}
+            .classificados {
+                background-color: #6CE26C !important;
+                background-image: none !important;
+                color: #000000 !important;
+            }
+		</style>
+	</ui:define>
+	<ui:define name="content">
+		<p:growl id="growl" life="2000" showDetail="false" />
+		<h:panelGroup rendered="#{campeonato.estado.incluir or campeonato.estado.alterar}">
+			<ui:include src="/pages/campeonatoEditar.xhtml" />
+		</h:panelGroup>
+		<h:panelGroup rendered="#{campeonato.estado.listar}">
+			<ui:include src="/pages/campeonatoListar.xhtml" />
+		</h:panelGroup>
+		<h:panelGroup rendered="#{campeonato.seleciona}">
+			<ui:include src="/pages/campeonatoParticipantes.xhtml" />
+		</h:panelGroup>
+		<h:panelGroup rendered="#{campeonato.tabela}">
+			<ui:include src="/pages/campeonatoTabela.xhtml" />
+		</h:panelGroup>
+	</ui:define>
+</ui:composition>
