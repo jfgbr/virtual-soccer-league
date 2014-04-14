@@ -1,40 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="1.0"
-	xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="
-      http://java.sun.com/xml/ns/persistence
-      http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
-			
-	<persistence-unit name="pu" transaction-type="JTA">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    	<jta-data-source>jdbc/mysql</jta-data-source>
-        <properties>
-            <property name="eclipselink.target-database" value="MYSQL"/>
-            <property name="eclipselink.jdbc.url" value="jdbc:mysql://localhost:3306/futebol"/>
-            <property name="eclipselink.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-            <property name="eclipselink.jdbc.user" value="root"/>
-            <property name="eclipselink.jdbc.password" value="futebol"/>
-            <property name="eclipselink.ddl-generation" value="create-tables"/>
-            <property name="eclipselink.logging.level" value="FINE"/>
-            <property name="eclipselink.flush-clear.cache" value="Drop"/>
-            <property name="eclipselink.cache.type.default" value="NONE"/>
-        </properties>
-    </persistence-unit>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+	version="2.1">
 
-<!--	<persistence-unit name="pu" transaction-type="JTA">-->
-<!--		<provider>org.hibernate.ejb.HibernatePersistence</provider>-->
-<!--		<jta-data-source>jdbc/mysql</jta-data-source>-->
-<!--		<properties>-->
-<!--			<property name="hibernate.hbm2ddl.auto" value="update" />-->
-<!--			<property name="hibernate.show_sql" value="true" />-->
-<!--			<property name="hibernate.format_sql" value="true" />-->
-<!--			-->
-<!--			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />-->
-<!--			<property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>-->
-<!--			<property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/futebol"/>-->
-<!--			<property name="hibernate.connection.username" value="root"/>-->
-<!--			<property name="hibernate.connection.password" value="futebol"/>-->
-<!--						-->
-<!--		</properties>		-->
-<!--	</persistence-unit>-->
+<!-- 	<persistence-unit name="pu" transaction-type="JTA"> -->
+<!-- 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider> -->
+<!-- 		<jta-data-source>jdbc/mysql</jta-data-source> -->
+<!-- 		<properties> -->
+<!-- 			<property name="eclipselink.target-database" value="MYSQL" /> -->
+<!-- 			<property name="eclipselink.jdbc.url" value="jdbc:mysql://localhost:3306/futebol" /> -->
+<!-- 			<property name="eclipselink.jdbc.driver" value="com.mysql.jdbc.Driver" /> -->
+<!-- 			<property name="eclipselink.jdbc.user" value="root" /> -->
+<!-- 			<property name="eclipselink.jdbc.password" value="futebol" /> -->
+<!-- 			<property name="eclipselink.ddl-generation" value="create-tables" /> -->
+<!-- 			<property name="eclipselink.logging.level" value="FINE" /> -->
+<!-- 			<property name="eclipselink.flush-clear.cache" value="Drop" /> -->
+<!-- 			<property name="eclipselink.cache.type.default" value="NONE" /> -->
+<!-- 		</properties> -->
+<!-- 	</persistence-unit> -->
+
+	<persistence-unit name="pu" transaction-type="RESOURCE_LOCAL">
+	<provider>org.hibernate.ejb.HibernatePersistence</provider>
+<!-- 	<jta-data-source>jdbc/mysql</jta-data-source> -->
+	<properties>
+<!-- 		<property name="hibernate.hbm2ddl.auto" value="create" /> -->
+		<property name="hibernate.show_sql" value="true" />
+		<property name="hibernate.format_sql" value="true" />
+
+		<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+<!-- 		<property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" /> -->
+<!-- 		<property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/vsl" /> -->
+<!-- 		<property name="hibernate.connection.username" value="root" /> -->
+<!-- 		<property name="hibernate.connection.password" value="admin" /> -->
+		
+		<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
+        <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/vsl" />
+        <property name="javax.persistence.jdbc.user" value="root" />
+        <property name="javax.persistence.jdbc.password" value="admin" />
+        <property name="hbm2ddl.auto" value="create" />
+
+	</properties>
+</persistence-unit>
 </persistence>

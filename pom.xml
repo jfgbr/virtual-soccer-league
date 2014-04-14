@@ -20,25 +20,40 @@
 	</properties>
 	
 	<dependencies>
-	
+
+		<!-- Hibernate	 -->
 		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.0-api</artifactId>
-			<version>1.0.1.Final</version>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>4.3.4.Final</version>
 		</dependency>
+            
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.hibernate.javax.persistence</groupId> -->
+<!-- 			<artifactId>hibernate-jpa-2.1-api</artifactId> -->
+<!-- 			<version>1.0.0.Final</version> -->
+<!-- 		</dependency> -->
 		
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.hibernate</groupId> -->
+<!-- 			<artifactId>hibernate-entitymanager</artifactId> -->
+<!-- 			<version>4.3.4.Final</version> -->
+<!-- 		</dependency> -->
+            
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>4.2.0.Final</version>
 		</dependency>
-		
+
+		<!-- EJB -->
 		<dependency>
 			<groupId>javax.ejb</groupId>
 			<artifactId>javax.ejb-api</artifactId>
 			<version>3.2</version>
 		</dependency>
 		
+		<!-- MySQL -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>

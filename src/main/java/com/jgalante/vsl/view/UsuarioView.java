@@ -10,7 +10,4 @@ import com.jgalante.vsl.entity.Usuario;
 public class UsuarioView extends BaseView<Usuario> {
 	private static final long serialVersionUID = 1L;
 	
-	public UsuarioView() {
-		System.out.println("teste");
-	}
 }
