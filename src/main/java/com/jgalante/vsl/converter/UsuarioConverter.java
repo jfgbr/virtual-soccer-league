@@ -9,7 +9,7 @@ import javax.faces.convert.FacesConverter;
 
 import com.jgalante.vsl.entity.Usuario;
 
-@FacesConverter
+@FacesConverter(value="usuarioConverter")
 public class UsuarioConverter implements Converter {
 
     public Object getAsObject(FacesContext facesContext, UIComponent component, String submittedValue) {

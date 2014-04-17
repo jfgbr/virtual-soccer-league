@@ -16,7 +16,6 @@ import org.primefaces.model.SortOrder;
 
 import com.jgalante.vsl.entity.BaseEntity;
 import com.jgalante.vsl.persistence.BaseDao;
-import com.jgalante.vsl.persistence.BaseDaoLocal;
 import com.jgalante.vsl.util.Estado;
 
 public abstract class BaseView<T extends BaseEntity> implements Serializable{
@@ -30,7 +29,7 @@ public abstract class BaseView<T extends BaseEntity> implements Serializable{
 	private T entidade;
 
 	@Inject
-	protected BaseDaoLocal baseDao;
+	protected BaseDao baseDao;
 
 	private LazyDataModel<T> dataModel;
 	private List<T> listaEntidades;

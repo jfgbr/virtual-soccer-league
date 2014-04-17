@@ -24,7 +24,7 @@ import com.jgalante.vsl.entity.Time;
 import com.jgalante.vsl.entity.TipoCampeonato;
 import com.jgalante.vsl.entity.TipoPartida;
 import com.jgalante.vsl.entity.Usuario;
-import com.jgalante.vsl.persistence.NegocioDaoLocal;
+import com.jgalante.vsl.persistence.NegocioDao;
 import com.jgalante.vsl.util.Estado;
 
 @Named("campeonato")
@@ -37,7 +37,7 @@ public class CampeonatoView extends BaseView<Campeonato> {
 	private static final Estado TABELA = new Estado(5, "Tabela");
 	
 	@Inject
-	private NegocioDaoLocal negocioDao;
+	private NegocioDao negocioDao;
 	
 	private List<TipoCampeonato> lstTipoCampeonato; 
 	private DualListModel<Usuario> usuarios;

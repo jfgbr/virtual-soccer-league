@@ -9,7 +9,7 @@ import javax.faces.convert.FacesConverter;
 
 import com.jgalante.vsl.entity.Time;
 
-@FacesConverter
+@FacesConverter(value="timeConverter")
 public class TimeConverter implements Converter {
 
     public Object getAsObject(FacesContext facesContext, UIComponent component, String submittedValue) {

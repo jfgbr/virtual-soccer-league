@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import com.jgalante.vsl.entity.Grupo;
@@ -12,14 +11,12 @@ import com.jgalante.vsl.entity.Participante;
 import com.jgalante.vsl.entity.Partida;
 import com.jgalante.vsl.entity.TipoCampeonato;
 
-@Stateless
-public class NegocioDao implements NegocioDaoLocal {
+public class NegocioDao {
 
 	@Inject
-	protected BaseDaoLocal baseDao;
+	protected BaseDao baseDao;
 	
 	@SuppressWarnings("unchecked")
-	@Override
 	public Participante obterParticipante(Participante participante) {
 		String jpql = "select distinct p from Participante p where " +
 				"p.usuario.id = :idUsuario and " +
@@ -40,7 +37,6 @@ public class NegocioDao implements NegocioDaoLocal {
 		}
 	}
 
-	@Override
 	@SuppressWarnings("unchecked")
 	public List<Partida> listarPorCampeonatoParticipanteOrdenado(Long idCampeonato, Long idParticipante) {
 		String jpql = "select p from Partida p "
@@ -56,7 +52,7 @@ public class NegocioDao implements NegocioDaoLocal {
 		return (List<Partida>)baseDao.findByJPQLParam(jpql, params);
 	}
 	
-	@Override
+	
 	@SuppressWarnings("unchecked")
 	public List<Participante> listarPorGrupo(Long idGrupo) {
 		String jpql = "select p from Participante p " + "where "
@@ -66,14 +62,13 @@ public class NegocioDao implements NegocioDaoLocal {
 		return (List<Participante>)baseDao.findByJPQLParam(jpql, params);
 	}
 
-	@Override
 	@SuppressWarnings("unchecked")
 	public List<TipoCampeonato> listarTipoCampeonato() {
 //		String jpql = "select t from TipoCampeonato t order by t.descricao";
 		return (List<TipoCampeonato>)baseDao.getListaEntidades(TipoCampeonato.class, "o.descricao");
 	}
 	
-	@Override
+	
 	@SuppressWarnings("unchecked")
 	public List<Grupo> listarGruposCampeonato(Long idCampeonato) {
 		String jpql = "select distinct(p.grupo) from Participante p " 
@@ -84,7 +79,7 @@ public class NegocioDao implements NegocioDaoLocal {
 		return (List<Grupo>)baseDao.findByJPQLParam(jpql, params);
 	}
 
-	public BaseDaoLocal getBaseDao() {
+	public BaseDao getBaseDao() {
 		return baseDao;
 	}
 

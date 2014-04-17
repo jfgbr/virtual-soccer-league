@@ -4,81 +4,69 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import com.jgalante.jgcrud.persistence.GenericDAO;
 import com.jgalante.vsl.entity.BaseEntity;
 import com.jgalante.vsl.entity.Participante;
-import com.jgalante.vsl.qualifier.DataRepository;
 
 
-@Stateless
-public class BaseDao implements BaseDaoLocal {
-
-//	private static Logger log = LoggerFactory.getLogger(BaseDao.class);
+public class BaseDao extends GenericDAO {
+	
+	private static final long serialVersionUID = 1L;
+	
+	//	private static Logger log = LoggerFactory.getLogger(BaseDao.class);
 	public static final Integer PAGESIZE = 10;
 
-	@DataRepository
-	@Inject
-	private EntityManager entityManager;
-
-	@Override
-	public EntityManager getEntityManager() {
-		return entityManager;
-	}
-
-	@Override
+	
 	public <T extends BaseEntity> T salvar(T entity) {
 //		if (entity.getId() == null){
-//			entityManager.merge(entity);
+//			getEntityManager().merge(entity);
 //			return entity;
 //		}else{
-			return entityManager.merge(entity);
+			return getEntityManager().merge(entity);
 //		}
 	}
 	
-	@Override
+	
 	public <T extends BaseEntity> void remover(T entity) {
-		entityManager.remove(entityManager.merge(entity));
+		getEntityManager().remove(getEntityManager().merge(entity));
 	}
 
-	@Override
+	
 	public <T extends BaseEntity> void refresh(T entity) {
-		if (entityManager.contains(entity)) {
-			entityManager.refresh(entity);
+		if (getEntityManager().contains(entity)) {
+			getEntityManager().refresh(entity);
 		}
 	}
 	
-	@Override
+	
 	public <T extends BaseEntity> T merge(T entity) {
-		 return entityManager.merge(entity);
+		 return getEntityManager().merge(entity);
 	}
 
-	@Override
+	
 	public <T extends BaseEntity> T getEntidade(Class<T> classeEntidade, Long id ){
-		return entityManager.find(classeEntidade, id);
+		return getEntityManager().find(classeEntidade, id);
 	}
 	
-	@Override
+	
 	public List<?> getListaEntidades(Class<?> classeEntidade){
-		return entityManager.createQuery("SELECT object(o) FROM "
+		return getEntityManager().createQuery("SELECT object(o) FROM "
 				+ classeEntidade.getSimpleName() + " AS o").getResultList();		
 	}
 	
-	@Override
+	
 	public List<?> getListaEntidades(Class<?> classeEntidade, String orderBy){
-		return entityManager.createQuery("SELECT object(o) FROM "
+		return getEntityManager().createQuery("SELECT object(o) FROM "
 				+ classeEntidade.getSimpleName() + " AS o order by "+ orderBy).getResultList();		
 	}
 	
 	@SuppressWarnings("unchecked")
-	@Override
 	public List<BaseEntity> buscaPaginada(String jpql,
 			int firstResult, int pageSize) {
 		
-		Query query = entityManager.createQuery(jpql);
+		Query query = getEntityManager().createQuery(jpql);
 		
 		query.setFirstResult(firstResult);
 
@@ -91,7 +79,7 @@ public class BaseDao implements BaseDaoLocal {
 
 	}
 	
-	@Override
+	
 	public List<BaseEntity> buscaPaginada(Class<?> classeEntidade,
 			int firstResult, int pageSize, String orderBy) {
 		String sql = "SELECT object(o) FROM " + classeEntidade.getSimpleName()
@@ -99,30 +87,30 @@ public class BaseDao implements BaseDaoLocal {
 		return buscaPaginada(sql, firstResult, pageSize);
 	}
 	
-	@Override
+	
 	public Integer totalRegistros(String jpql){
 		Query query;
 		String[] lst = jpql.split(" ", 3);
 		if (lst.length > 1){
-			query = entityManager.createQuery("SELECT count(" +lst[1] +") " + lst[2]);
+			query = getEntityManager().createQuery("SELECT count(" +lst[1] +") " + lst[2]);
 		}else
-			query = entityManager.createQuery("SELECT count(o) FROM " + jpql + " o");
+			query = getEntityManager().createQuery("SELECT count(o) FROM " + jpql + " o");
 		
 		return ((Long)query.getSingleResult()).intValue();
 	}
 
-	@Override
+	
 	public List<?> findByJPQL(String jpql) {
-		Query query = entityManager.createQuery(jpql);
+		Query query = getEntityManager().createQuery(jpql);
 		List<?> result = query.getResultList();
 
 		return result;
 	}
 	
-	@Override
+	
 	public List<?> findByJPQLParam(String jpql, Map<String, Object> params) {
 
-		Query q = entityManager.createQuery(jpql);
+		Query q = getEntityManager().createQuery(jpql);
 		for (String chave : params.keySet()) {
 			q.setParameter(chave, params.get(chave));
 
@@ -133,7 +121,6 @@ public class BaseDao implements BaseDaoLocal {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@Override
 	public Participante obterParticipante(Participante participante) {
 		String jpql = "select distinct p from Participante p where " +
 				"p.usuario.id = :idUsuario and " +

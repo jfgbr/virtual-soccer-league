@@ -4,10 +4,6 @@ import java.beans.Transient;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -15,26 +11,13 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @MappedSuperclass
-public abstract class BaseEntity {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", unique = true, nullable = false)
-	private Long id;
+public abstract class BaseEntity extends com.jgalante.jgcrud.entity.BaseEntity{
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dataRegistro;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dataAlteracao;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public Date getDataRegistro() {
 		return dataRegistro;
@@ -77,7 +60,7 @@ public abstract class BaseEntity {
 //		result = prime
 //				* result
 //				+ ((getTextoExibicao() == null) ? 0 : getTextoExibicao().hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
 		return result;
 	}
 
@@ -90,10 +73,10 @@ public abstract class BaseEntity {
 		if (getClass() != obj.getClass())
 			return false;
 		BaseEntity other = (BaseEntity) obj;
-		if (id == null) {
-			if (other.id != null)
+		if (getId() == null) {
+			if (other.getId() != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!getId().equals(other.getId()))
 			return false;
 		return true;
 	}

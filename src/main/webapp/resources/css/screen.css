@@ -5,6 +5,10 @@ body {
 	width: 100%;
 }
 
+.ui-widget {
+    font-size: 0.6em;
+}
+
 #header {
 	text-align: center;	
 }
@@ -50,30 +54,3 @@ body {
     padding-left:22px !important;
 }
 
-td {
-	vertical-align: top;
-}
-
-.ui-menu .ui-menu-item .ui-menu-item-label {
-	font-size: 12px
-}
-
-/* Style the body */
-.ui-layout .ui-layout-unit div.ui-layout-bd {
-    text-align: left;
-    border: 0px;
-}
-
-.btnColunaAcoes {
-	text-align:center;
-	width:20px;
-	white-space: nowrap;
-}
-
-.tabelas {
-	min-width: 400px;
-}
-
-.timeSigla {
-	width: 30px;
-}

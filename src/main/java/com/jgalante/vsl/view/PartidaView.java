@@ -9,7 +9,7 @@ import javax.inject.Named;
 
 import com.jgalante.vsl.entity.Campeonato;
 import com.jgalante.vsl.entity.Partida;
-import com.jgalante.vsl.persistence.NegocioDaoLocal;
+import com.jgalante.vsl.persistence.NegocioDao;
 
 @Named("partida")
 @ViewScoped
@@ -18,7 +18,7 @@ public class PartidaView extends BaseView<Partida> {
 	private static final long serialVersionUID = 1L;
 	
 	@Inject
-	private NegocioDaoLocal negocioDao;
+	private NegocioDao negocioDao;
 	private Long opcaoDeSelecaoDeCampeonatos;
 	private List<Campeonato> lstCampeonatos;
 
