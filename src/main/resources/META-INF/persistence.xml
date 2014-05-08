@@ -28,6 +28,17 @@
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.format_sql" value="true" />
             <property name="hibernate.connection.charSet" value="UTF-8"/>
+            
+            <!-- This value doesn't have any theoretical grounds and is purely based on experiments. Value of 32 gives
+              the best compromise between the quick load of queries with low and high limits (i.e. page size in tens vs.
+              thousands) in an inventory with 30 agents and >20000 resources. -->
+         	<property name="hibernate.default_batch_fetch_size" value="32"/>
+            
+            <!-- Used only for debugging the usages of JOIN FETCHes -->
+<!--          <property name="hibernate.query.factory_class" value="com.jgalante.jgcrud.model.JoinFetchReportingQueryTranslatorFactory" /> -->
+            
+            <property name="hibernate.jdbc.batch_size" value="30"/>
+         	<property name="hibernate.cache.use_second_level_cache" value="false"/>
 			
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
 <!-- 			<property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/> -->

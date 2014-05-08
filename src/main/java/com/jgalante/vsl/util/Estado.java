@@ -41,6 +41,10 @@ public class Estado {
 		return this.equals(INCLUIR);
 	}
 	
+	public void setIncluir(boolean incluir) {
+		
+	}
+	
 	public boolean isAlterar(){
 		return this.equals(ALTERAR);
 	}

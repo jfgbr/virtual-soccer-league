@@ -1,7 +1,6 @@
 package com.jgalante.vsl.entity;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,7 +33,7 @@ public class Usuario extends BaseEntity {
 	private String nome;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
-	private Set<Participante> participantes = new HashSet<Participante>(0);
+	private Set<Participante> participantes;
 
 	public Usuario() {
 	}

@@ -8,11 +8,22 @@
 		<h:panelGrid columns="1" >
 			<p:commandButton action="/pages/usuario?faces-redirect=true" value="Usuário" style="width:100px">
 				<f:setPropertyActionListener target="#{flash.crudPage}" value="Usuario"/>
+				<f:setPropertyActionListener target="#{flash.joinFields}" value="participantes"/>
 			</p:commandButton>
 			<p:commandButton action="/pages/pais?faces-redirect=true" value="País" style="width:100px">
 				<f:setPropertyActionListener target="#{flash.crudPage}" value="Pais"/>
+				<f:setPropertyActionListener target="#{flash.joinFields}" value="times"/>
+			</p:commandButton>
+			<p:commandButton action="/pages/time?faces-redirect=true" value="Time" style="width:100px">
+				<f:setPropertyActionListener target="#{flash.crudPage}" value="Time"/>
+				<f:setPropertyActionListener target="#{flash.joinFields}" value="participantes,pais"/>
+			</p:commandButton>
+			<p:commandButton action="/pages/participante?faces-redirect=true" value="Participante" style="width:100px">
+				<f:setPropertyActionListener target="#{flash.crudPage}" value="Participante"/>
+				<f:setPropertyActionListener target="#{flash.joinFields}" value="time.pais"/>
 			</p:commandButton>
 		</h:panelGrid>
+		<ui:remove>
 	<p:menu style="width:200px" >
 		<p:submenu>
 			<p:menuitem value="Usuário" url="/pages/usuario" >
@@ -43,5 +54,6 @@
 		</p:submenu>
 		
 	</p:menu>
+	</ui:remove>
 	</h:form>
 </ui:composition>

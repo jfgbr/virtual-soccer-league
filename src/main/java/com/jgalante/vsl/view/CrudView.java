@@ -8,9 +8,11 @@ import javax.inject.Named;
 
 import com.jgalante.annotation.Param;
 import com.jgalante.faces.ViewScoped;
+import com.jgalante.jgcrud.entity.BaseEntity;
+import com.jgalante.jgcrud.model.DelegateDataModel;
 import com.jgalante.jgcrud.view.GenericView;
 import com.jgalante.util.Parameter;
-import com.jgalante.vsl.entity.BaseEntity;
+import com.jgalante.vsl.util.Estado;
 
 @Named
 @ViewScoped
@@ -22,24 +24,46 @@ public class CrudView extends GenericView implements Serializable{
 	@Param
 	private Parameter<String> crudPage;
 	
-//	private Usuario usuario;
-//	private Pais pais;
-
-//	@SuppressWarnings("unchecked")
+	@Inject
+	@Param
+	private Parameter<String> joinFields;
+	
+	private Estado currentState;
+	
 	@PostConstruct
 	public void init() {
-//		usuario = new Usuario();
-//		pais = new Pais();
+		getController().setDataModel(new DelegateDataModel<BaseEntity>(getController(), joinFields.getValue()));
+		currentState = Estado.LISTAR;
 		setEntity(verifyCrudPage(crudPage.getValue()));
-		
-		setEntities(findAll());
+//		setEntities(findAll());
 	}
 	
 	@Override
 	public String save() {
-		save(getEntity());
-		setEntities(findAll());
+		super.save();
+		currentState = Estado.LISTAR;
+		setEntity(verifyCrudPage(crudPage.toString()));
+		crudPage.keep();
 		return null;
+	}
+	
+//	@Override
+//	public String remove() {
+//		super.remove();
+//		crudPage.keep();
+//		return null;
+//	}
+	
+	public void newEntity() {
+		currentState = Estado.INCLUIR;
+		crudPage.keep();
+//		return "/pages/" + crudPage.toString().toLowerCase();
+	}
+	
+	public void close() {
+		currentState = Estado.LISTAR;
+		crudPage.keep();
+		setEntity(verifyCrudPage(crudPage.toString()));
 	}
 	
 	@SuppressWarnings({ "unchecked" })
@@ -49,13 +73,8 @@ public class CrudView extends GenericView implements Serializable{
 			setEntityClass(cls);
 			return (T) cls.newInstance();
 		} catch (Exception e) {
-			return null;
+			throw new RuntimeException("Page is not initialized!");
 		}
-//		if ("usuario".equals(page)) {
-//			setEntityClass(Usuario.class);
-//			return (T) new Usuario();
-//		}
-//		return null;
 	}
 
 	public Parameter<String> getCrudPage() {
@@ -64,6 +83,18 @@ public class CrudView extends GenericView implements Serializable{
 
 	public void setCrudPage(Parameter<String> crudPage) {
 		this.crudPage = crudPage;
+	}
+	
+	public Parameter<String> getJoinFields() {
+		return joinFields;
+	}
+
+	public Estado getCurrentState() {
+		return currentState;
+	}
+
+	public void setCurrentState(Estado currentState) {
+		this.currentState = currentState;
 	}
 
 }

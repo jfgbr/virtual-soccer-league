@@ -2,11 +2,11 @@ body {
 	background-color: #EAECEE;
 	font-family: Verdana, sans-serif;
 	height: 100%;
-	width: 100%;
+	font-size: 14px;
 }
 
-.ui-widget {
-    font-size: 0.6em;
+.ui-widget, .ui-widget .ui-widget {
+	font-size: 90% !important;
 }
 
 #header {
@@ -21,6 +21,7 @@ body {
 	width: 150px;
 	min-height: 500px;
 	text-align: left;
+	vertical-align: top;
 }
 
 #container {
@@ -30,6 +31,7 @@ body {
 .content {
 	min-height: 500px;
 	width: 100%;
+	margin-right:10px;
 }
 
 .linha {
@@ -43,6 +45,16 @@ body {
 	padding-top: 8px;
 	border-top: 1px solid #c0c0c0;
 	clear : both;
+}
+
+.center {
+	text-align:center;
+}
+
+.btnColunaAcoes {
+	text-align:center;
+	width:20px;
+	white-space: nowrap;
 }
 
 .btnSaveIcon {

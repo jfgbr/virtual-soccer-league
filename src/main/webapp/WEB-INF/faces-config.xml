@@ -8,4 +8,8 @@
 			<var>messages</var>
 		</resource-bundle>
 	</application>
+	
+	<lifecycle>
+		<phase-listener>com.jgalante.vsl.listener.PagesListener</phase-listener>
+	</lifecycle>
 </faces-config>

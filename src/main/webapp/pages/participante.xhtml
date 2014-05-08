@@ -1,16 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
-	template="/WEB-INF/templates/template.xhtml">
+	xmlns:v="http://xmlns.jcp.org/jsf/composite/components"
+	template="/resources/templates/template.xhtml">
 	<ui:define name="content">
-		<p:growl id="growl" life="2000" showDetail="false" />
-		<h:panelGroup rendered="#{participante.estado.incluir or participante.estado.alterar}">
-			<ui:include src="/pages/participanteEditar.xhtml" />
-		</h:panelGroup>
-		<h:panelGroup rendered="#{participante.estado.listar}">
-			<ui:include src="/pages/participanteListar.xhtml" />
-		</h:panelGroup>
+		<v:crudPage id="crud-participante" formId="frm-participante" headerPanel="Participante"
+			headerDialog="Novo Participante" view="#{participante}">
+			
+			<f:facet name="headerFields">
+				<h:panelGrid columns="1" width="300px">
+					<p:selectOneMenu
+						valueChangeListener="#{participante.obterListaDeCampeonatos}">
+						<f:selectItem itemLabel="Todos" itemValue="0" />
+						<f:selectItems value="#{participante.lstCampeonatos}" var="c"
+							itemLabel="#{c.nome}" itemValue="#{c.id}" />
+						<f:ajax event="change" render="content" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+			</f:facet>
+			
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="Usuario" />
+				</f:facet>
+				<h:outputText value="#{item.usuario.nome}" />
+			</p:column>
+			
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="Time" />
+				</f:facet>
+				<h:outputText value="#{item.time.nome} (#{item.time.pais.sigla})" />
+			</p:column>
+			
+			<p:column style="width:100px">
+				<f:facet name="header">
+					<h:outputText value="Tipo de Participante" />
+				</f:facet>
+				<h:outputText value="#{item.campeonato.nome}" rendered="#{not empty item.campeonato}"/>
+				<h:outputText value="Amistoso" rendered="#{empty item.campeonato}"/>
+			</p:column>
+			
+			<p:column styleClass="btnColunaAcoes">
+				<ui:remove>
+				<p:commandButton action="#{participante.alterar}" update="content"
+					image="ui-icon ui-icon-plusthick" style="font-size:6pt;"
+					disabled="#{not item.exclui}" />
+				<h:outputText value=" " />
+				</ui:remove>
+				<p:commandButton action="#{participante.remove(item)}" update="content"
+					image="ui-icon ui-icon-closethick" style="font-size:6pt;" 
+					disabled="#{not item.exclui}"/>
+			</p:column>
+			
+			<f:facet name="dialogFields">
+				<h:panelGrid columns="2" width="300px">
+					<h:outputText value="Usuário" />
+					<p:selectOneMenu style="width:100px" value="#{participante.entity.usuario.id}">
+						<f:selectItems value="#{participante.usuarios}" var="u"
+							itemLabel="#{u.nome}" itemValue="#{u.id}" />
+					</p:selectOneMenu>
+					<h:outputText value="Time" />
+					<p:selectOneMenu value="#{participante.entity.time.id}">
+						<f:selectItems value="#{participante.times}" var="t"
+							itemLabel="#{t.nome} (#{t.pais.sigla})" itemValue="#{t.id}" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+			</f:facet>
+			
+		</v:crudPage>
+	
 	</ui:define>
 </ui:composition>

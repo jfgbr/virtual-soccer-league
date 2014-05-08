@@ -5,17 +5,22 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 <h:head>
-	<title>Application</title>
+	<title>Virtual Soccer League</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<h:outputStylesheet name="css/screen.css" />
 	<ui:insert name="styles" />
 </h:head>
 <h:body>
-	<h:panelGrid columns="3" width="100%" columnClasses="sidebar,linha,content">
+	<h:panelGroup id="header" layout="block" class="ui-widget ui-widget-header">
+   		<h1><h:link outcome="/home.jsf" value="Virtual Soccer League" style="text-decoration: none;color:white"/></h1>
+   	</h:panelGroup>
+	<h:panelGrid columns="3" columnClasses="sidebar,content">
 		<h:panelGroup id="sidebar" layout="block">
 			<ui:include src="menu.xhtml" />
 		</h:panelGroup>
+		<ui:remove>
 		<h:panelGroup id="linha" style="min-height: 400px;" layout="block"/>
+		</ui:remove>
 		<h:panelGroup id="content" layout="block">
 			<ui:insert name="content">Main Content</ui:insert>
 		</h:panelGroup>

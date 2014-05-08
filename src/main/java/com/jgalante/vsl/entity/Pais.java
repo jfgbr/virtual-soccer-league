@@ -1,7 +1,6 @@
 package com.jgalante.vsl.entity;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -29,7 +28,7 @@ public class Pais extends BaseEntity {
 	private String sigla;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "pais")
-	private Set<Time> times = new HashSet<Time>(0);
+	private Set<Time> times;
 
 	public Pais() {
 	}
