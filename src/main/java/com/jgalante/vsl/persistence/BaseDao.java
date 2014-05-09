@@ -1,36 +1,46 @@
 package com.jgalante.vsl.persistence;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 
-import com.jgalante.jgcrud.persistence.GenericDAO;
+import com.jgalante.vsl.annotation.DataRepository;
 import com.jgalante.vsl.entity.BaseEntity;
 import com.jgalante.vsl.entity.Participante;
 
 
-public class BaseDao extends GenericDAO {
+public class BaseDao implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
 	//	private static Logger log = LoggerFactory.getLogger(BaseDao.class);
 	public static final Integer PAGESIZE = 10;
 
+	@Inject
+	@DataRepository
+	private EntityManager entityManager;
+
+	private String joinClause;
 	
+	@Transactional
 	public <T extends BaseEntity> T salvar(T entity) {
 //		if (entity.getId() == null){
 //			getEntityManager().merge(entity);
 //			return entity;
 //		}else{
-			return getEntityManager().merge(entity);
+			return merge(entity);
 //		}
 	}
 	
-	
+	@Transactional
 	public <T extends BaseEntity> void remover(T entity) {
-		getEntityManager().remove(getEntityManager().merge(entity));
+		getEntityManager().remove(merge(entity));
 	}
 
 	
@@ -53,13 +63,13 @@ public class BaseDao extends GenericDAO {
 	
 	public List<?> getListaEntidades(Class<?> classeEntidade){
 		return getEntityManager().createQuery("SELECT object(o) FROM "
-				+ classeEntidade.getSimpleName() + " AS o").getResultList();		
+				+ classeEntidade.getSimpleName() + " AS o " + (joinClause != null?joinClause:"")).getResultList();		
 	}
 	
 	
 	public List<?> getListaEntidades(Class<?> classeEntidade, String orderBy){
 		return getEntityManager().createQuery("SELECT object(o) FROM "
-				+ classeEntidade.getSimpleName() + " AS o order by "+ orderBy).getResultList();		
+				+ classeEntidade.getSimpleName() + " AS o " + " order by "+ orderBy).getResultList();		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -83,18 +93,18 @@ public class BaseDao extends GenericDAO {
 	public List<BaseEntity> buscaPaginada(Class<?> classeEntidade,
 			int firstResult, int pageSize, String orderBy) {
 		String sql = "SELECT object(o) FROM " + classeEntidade.getSimpleName()
-				+ " AS o order by " + orderBy;
+				 + " AS o " + (joinClause != null?joinClause:"") + " order by " + orderBy;
 		return buscaPaginada(sql, firstResult, pageSize);
 	}
 	
 	
 	public Integer totalRegistros(String jpql){
 		Query query;
-		String[] lst = jpql.split(" ", 3);
+		String[] lst = jpql.split(" ", 4);
 		if (lst.length > 1){
-			query = getEntityManager().createQuery("SELECT count(" +lst[1] +") " + lst[2]);
+			query = getEntityManager().createQuery("SELECT count(" +lst[1] +") " + lst[2] + " " + (lst[3] != null?lst[3].replaceAll("FETCH", ""):""));
 		}else
-			query = getEntityManager().createQuery("SELECT count(o) FROM " + jpql + " o");
+			query = getEntityManager().createQuery("SELECT count(o) FROM " + jpql + " o " + (joinClause != null?joinClause.replaceAll("FETCH", ""):""));
 		
 		return ((Long)query.getSingleResult()).intValue();
 	}
@@ -138,4 +148,13 @@ public class BaseDao extends GenericDAO {
 		else
 			return participante;
 	}
+
+	public EntityManager getEntityManager() {
+		return entityManager;
+	}
+
+	public void setJoinClause(String joinClause) {
+		this.joinClause = joinClause;
+	}
+	
 }

@@ -40,7 +40,7 @@ public class Partida extends BaseEntity {
 	@Column(name = "golsVisitantePenalty")
 	private Integer golsVisitantePenalty;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "idTipoPartida", nullable = false)
 	private TipoPartida tipoPartida;
 

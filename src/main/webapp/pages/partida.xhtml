@@ -1,16 +1,127 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
-	template="/WEB-INF/templates/template.xhtml">
+	xmlns:v="http://xmlns.jcp.org/jsf/composite/components"
+	template="/resources/templates/template.xhtml">
 	<ui:define name="content">
-		<p:growl id="growl" life="2000" showDetail="false" />
-		<h:panelGroup rendered="#{partida.estado.incluir or partida.estado.alterar}">
-			<ui:include src="/pages/partidaEditar.xhtml" />
-		</h:panelGroup>
-		<h:panelGroup rendered="#{partida.estado.listar}">
-			<ui:include src="/pages/partidaListar.xhtml" />
-		</h:panelGroup>
+		<v:crudPage id="crud-partida" formId="frm-partida" view="#{partida}"
+			headerPanel="Partida" headerDialog="Nova Partida" width="550px">
+			<f:facet name="topFields">
+				<h:panelGrid columns="1" width="300px">
+					<p:selectOneMenu
+						valueChangeListener="#{partida.obterListaDeCampeonatos}">
+						<f:selectItem itemLabel="Todos" itemValue="0" />
+						<f:selectItems value="#{partida.lstCampeonatos}" var="c"
+							itemLabel="#{c.nome}" itemValue="#{c.id}" />
+						<p:ajax event="change"
+							update=":crud-partida:frm-partida:data-table" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+			</f:facet>
+
+			<p:columnGroup type="header">
+				<p:row>
+					<p:column colspan="2" headerText="Mandante" />
+					<p:column rowspan="2" headerText="Placar" />
+					<p:column colspan="2" headerText="Visitante" />
+					<p:column rowspan="2" headerText="Tipo da Partida" />
+					<p:column rowspan="2" headerText="" />
+				</p:row>
+
+				<p:row>
+					<p:column colspan="1" headerText="Nome" />
+					<p:column colspan="1" headerText="Time" />
+					<p:column colspan="1" headerText="Time" />
+					<p:column colspan="1" headerText="Nome" />
+				</p:row>
+			</p:columnGroup>
+
+			<p:column>
+				<h:outputText value="#{item.mandante.usuario.nome}" />
+			</p:column>
+
+			<p:column>
+				<h:outputText value="#{item.mandante.time.nome}" />
+			</p:column>
+
+			<p:column style="text-align:center;">
+				<h:outputText value="#{item.golsMandante} X #{item.golsVisitante}" />
+			</p:column>
+
+			<p:column>
+				<h:outputText value="#{item.visitante.time.nome}" />
+			</p:column>
+
+			<p:column>
+				<h:outputText value="#{item.visitante.usuario.nome}" />
+			</p:column>
+
+			<p:column style="width:auto">
+				<h:outputText value="#{item.mandante.campeonato.nome} - "
+					rendered="#{item.mandante.campeonato.id gt 1}"
+					style="white-space: nowrap;" />
+				<h:outputText value="#{item.tipoPartida.descricao}" />
+			</p:column>
+
+			<p:column styleClass="btnColunaAcoes">
+				<p:commandButton action="#{partida.alterar}"
+					update=":crud-partida:frm-partida:edit:modal"
+					icon="ui-icon ui-icon-plusthick" style="font-size:6pt;" />
+				<h:outputText value=" " />
+				<p:commandButton action="#{partida.remover}"
+					update=":crud-partida:frm-partida:data-table"
+					icon="ui-icon ui-icon-closethick" style="font-size:6pt;"
+					rendered="#{empty item.golsMandante or empty item.golsVisitante}" />
+			</p:column>
+
+			<f:facet name="dialogFields">
+				<p:panelGrid columns="6"
+					style="white-space:nowrap;" >
+					<p:selectOneMenu style="width:100px"
+						value="#{partida.entidade.mandante.usuario.id}"
+						disabled="#{partida.estado.alterar}">
+						<f:selectItems value="#{usuario.listaEntidades}" var="u"
+							itemLabel="#{u.nome}" itemValue="#{u.id}" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu value="#{partida.entidade.mandante.time.id}"
+						disabled="#{partida.estado.alterar}">
+						<f:selectItems value="#{time.listaEntidades}" var="t"
+							itemLabel="#{t.nome} (#{t.pais.sigla})" itemValue="#{t.id}" />
+					</p:selectOneMenu>
+
+					<p:column style="text-align:center;">
+						<p:inputText maxlength="2"
+							value="#{partida.entidade.golsMandante}" style="width : 18px;" />
+						<p:outputLabel value=" X " />
+						<p:inputText maxlength="2"
+							value="#{partida.entidade.golsVisitante}" style="width : 18px;" />
+					</p:column>
+
+					<p:selectOneMenu value="#{partida.entidade.visitante.time.id}"
+						disabled="#{partida.estado.alterar}">
+						<f:selectItems value="#{time.listaEntidades}" var="t"
+							itemLabel="#{t.nome} (#{t.pais.sigla})" itemValue="#{t.id}" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu style="width:100px"
+						value="#{partida.entidade.visitante.usuario.id}"
+						disabled="#{partida.estado.alterar}">
+						<f:selectItems value="#{usuario.listaEntidades}" var="u"
+							itemLabel="#{u.nome}" itemValue="#{u.id}" />
+					</p:selectOneMenu>
+
+					<p:column style="width:50px">
+						<p:calendar value="#{partida.entidade.dataPartida}" size="8"
+							inputStyle="width:45px" pattern="dd/MM/yyyy" />
+					</p:column>
+				</p:panelGrid>
+			</f:facet>
+
+		</v:crudPage>
+
 	</ui:define>
 </ui:composition>

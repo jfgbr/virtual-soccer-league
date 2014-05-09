@@ -1,18 +1,23 @@
 package com.jgalante.vsl.persistence;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
+import com.jgalante.vsl.entity.BaseEntity;
+import com.jgalante.vsl.entity.Campeonato;
 import com.jgalante.vsl.entity.Grupo;
 import com.jgalante.vsl.entity.Participante;
 import com.jgalante.vsl.entity.Partida;
 import com.jgalante.vsl.entity.TipoCampeonato;
 
-public class NegocioDao {
+public class NegocioDao implements Serializable{
 
+	private static final long serialVersionUID = 1L;
+	
 	@Inject
 	protected BaseDao baseDao;
 	
@@ -68,6 +73,19 @@ public class NegocioDao {
 		return (List<TipoCampeonato>)baseDao.getListaEntidades(TipoCampeonato.class, "o.descricao");
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<Participante> listarParticipantesPorCampeonato(Long id) {
+		String jpql = "select p FROM Participante p where p.campeonato.id = :id";
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", id);
+		return (List<Participante>)baseDao.findByJPQLParam(jpql, params);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Campeonato> listarCampeonatos() {
+		return (List<Campeonato>)baseDao.getListaEntidades(Campeonato.class, "o.nome");
+	}
+	
 	
 	@SuppressWarnings("unchecked")
 	public List<Grupo> listarGruposCampeonato(Long idCampeonato) {
@@ -81,6 +99,25 @@ public class NegocioDao {
 
 	public BaseDao getBaseDao() {
 		return baseDao;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<BaseEntity> listarTimes() {
+		String jpql = "select t FROM Time t LEFT JOIN FETCH t.pais p ORDER BY t.nome, p.nome";
+		return (List<BaseEntity>) baseDao.findByJPQL(jpql);
+	}
+
+	@SuppressWarnings("unchecked")
+	public BaseEntity carregaPartida(Long id) {
+		String jpql = "select p FROM Partida p where p.id = :id";
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", id);
+		List<Partida> partidas = (List<Partida>) baseDao.findByJPQLParam(jpql, params);
+		if (partidas.size() > 0){			
+			return partidas.get(0);
+		}else{
+			return null;
+		}
 	}
 
 }

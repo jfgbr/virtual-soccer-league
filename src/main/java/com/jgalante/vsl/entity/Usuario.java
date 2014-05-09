@@ -13,18 +13,6 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-/**
- * The Person class is the superclass for the {@link Student} and
- * {@link Teacher} classes that extend the person by adding information relevant
- * to those sub classes. This class implements the name information and includes
- * helper methods for displaying the name.
- * <p/>
- * It also demonstrates JPA inheritance using the joined table mechanism and a
- * discriminator column value.
- * 
- * @author Andy Gibson
- * 
- */
 @Entity
 public class Usuario extends BaseEntity {
 

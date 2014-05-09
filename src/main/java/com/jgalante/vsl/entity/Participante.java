@@ -35,10 +35,12 @@ public class Participante extends BaseEntity {
 	@JoinColumn(name = "idGrupo")
 	private Grupo grupo;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mandante")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mandante", cascade = { CascadeType.PERSIST,
+			CascadeType.MERGE })
 	private Set<Partida> partidasMandante = new HashSet<Partida>(0);
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "visitante")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "visitante", cascade = { CascadeType.PERSIST,
+			CascadeType.MERGE })
 	private Set<Partida> partidasVisitante = new HashSet<Partida>(0);
 
 	@Transient

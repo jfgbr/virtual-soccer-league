@@ -2,18 +2,20 @@ package com.jgalante.vsl.view;
 
 import java.util.List;
 
-import javax.faces.bean.ViewScoped;
+import javax.annotation.PostConstruct;
 import javax.faces.event.ValueChangeEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.jgalante.vsl.entity.BaseEntity;
 import com.jgalante.vsl.entity.Campeonato;
 import com.jgalante.vsl.entity.Partida;
 import com.jgalante.vsl.persistence.NegocioDao;
 
 @Named("partida")
 @ViewScoped
-public class PartidaView extends BaseView<Partida> {
+public class PartidaView extends CrudView {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -22,15 +24,32 @@ public class PartidaView extends BaseView<Partida> {
 	private Long opcaoDeSelecaoDeCampeonatos;
 	private List<Campeonato> lstCampeonatos;
 
+	private static String JOIN = "LEFT JOIN FETCH o.mandante m LEFT JOIN FETCH m.time LEFT JOIN FETCH m.usuario LEFT JOIN FETCH m.campeonato LEFT JOIN FETCH o.visitante v LEFT JOIN FETCH v.time LEFT JOIN FETCH v.usuario ";
+	
+	@PostConstruct
+	@Override
+	public void init() {
+		super.init();
+		setJoinClause(JOIN);
+	}
+	
 	@Override
 	public void salvar() {
-		getEntidade().setMandante(
-				negocioDao.obterParticipante(getEntidade().getMandante()));
-		getEntidade().setVisitante(
-				negocioDao.obterParticipante(getEntidade().getVisitante()));
+		Partida partida = (Partida)getEntidade();
+		partida.setMandante(
+				negocioDao.obterParticipante(partida.getMandante()));
+		partida.setVisitante(
+				negocioDao.obterParticipante(partida.getVisitante()));
 //		getEntidade().getMandante().getPartidasMandante().add(getEntidade());
 //		getEntidade().getVisitante().getPartidasVisitante().add(getEntidade());
 		super.salvar();
+	}
+	
+	@Override
+	protected BaseEntity carregaEntidade() {
+		setId(null);
+		baseDao.refresh(getEntidade());
+		return getEntidade();
 	}
 
 	public void obterListaDeCampeonatos(ValueChangeEvent evento) {
@@ -41,12 +60,13 @@ public class PartidaView extends BaseView<Partida> {
 			obterListaDeCampeonatos();
 		} catch (NumberFormatException e) {
 			setQueryBusca(null);
+		} catch (NullPointerException e) {
 		}
 	}
 
 	public void obterListaDeCampeonatos() {
 		if (opcaoDeSelecaoDeCampeonatos != 0L) {
-			setQueryBusca("select p FROM Partida p where p.mandante.campeonato.id = "
+			setQueryBusca("select o FROM Partida o "+ JOIN +" where m.campeonato.id = "
 					+ opcaoDeSelecaoDeCampeonatos.toString());
 		}else
 			setQueryBusca(null);
@@ -54,10 +74,9 @@ public class PartidaView extends BaseView<Partida> {
 		limpaEntidade();
 	}
 	
-	@SuppressWarnings("unchecked")
 	public List<Campeonato> getLstCampeonatos(){
 		if (lstCampeonatos == null)
-			lstCampeonatos = (List<Campeonato>)baseDao.getListaEntidades(Campeonato.class, "o.nome");
+			lstCampeonatos = negocioDao.listarCampeonatos();
 		return lstCampeonatos;
 	}
 }

@@ -37,7 +37,7 @@ public class Campeonato extends BaseEntity {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "campeonato", cascade = CascadeType.ALL)
 	private Set<Participante> participantes = new HashSet<Participante>(0);
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "idTipoCampeonato")
 	private TipoCampeonato tipoCampeonato;
 

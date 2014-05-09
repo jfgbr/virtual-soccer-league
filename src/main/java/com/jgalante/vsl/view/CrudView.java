@@ -4,17 +4,14 @@ import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import com.jgalante.annotation.Param;
-import com.jgalante.faces.ViewScoped;
-import com.jgalante.jgcrud.view.GenericView;
 import com.jgalante.util.Parameter;
 import com.jgalante.vsl.entity.BaseEntity;
 
-@Named
-@ViewScoped
-public class CrudView extends GenericView implements Serializable{
+//@Named
+//@ViewScoped
+public class CrudView extends BaseView<BaseEntity> implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
@@ -30,32 +27,45 @@ public class CrudView extends GenericView implements Serializable{
 	public void init() {
 //		usuario = new Usuario();
 //		pais = new Pais();
-		setEntity(verifyCrudPage(crudPage.getValue()));
+		setEntidade(verifyCrudPage(crudPage.getValue()));
 		
-		setEntities(findAll());
+		listar();
 	}
 	
 	@Override
-	public String save() {
-		save(getEntity());
-		setEntities(findAll());
-		return null;
+	public void salvar() {
+		super.salvar();
+		listar();
+	}
+	
+	@Override
+	public void listar() {
+		super.listar();
+		setListaEntidades(null);		
+	}
+	
+	@Override
+	public void novo() {
+		super.novo();
+		setEntidade(verifyCrudPage(crudPage.getValue()));
+		crudPage.keep();
+	}
+	
+	public void fechar() {
+		listar();
+		crudPage.keep();
+		setEntidade(verifyCrudPage(crudPage.getValue()));
 	}
 	
 	@SuppressWarnings({ "unchecked" })
-	private <T extends BaseEntity> T verifyCrudPage(String page) {
+	protected <T extends BaseEntity> T verifyCrudPage(String page) {
 		try {
 			Class<T> cls = (Class<T>) Class.forName("com.jgalante.vsl.entity."+page);
-			setEntityClass(cls);
+			setClasseEntidade(cls);
 			return (T) cls.newInstance();
 		} catch (Exception e) {
 			return null;
 		}
-//		if ("usuario".equals(page)) {
-//			setEntityClass(Usuario.class);
-//			return (T) new Usuario();
-//		}
-//		return null;
 	}
 
 	public Parameter<String> getCrudPage() {

@@ -4,6 +4,10 @@ import java.beans.Transient;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -11,13 +15,26 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @MappedSuperclass
-public abstract class BaseEntity extends com.jgalante.jgcrud.entity.BaseEntity{
+public abstract class BaseEntity {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", unique = true, nullable = false)
+	private Long id;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dataRegistro;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dataAlteracao;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public Date getDataRegistro() {
 		return dataRegistro;

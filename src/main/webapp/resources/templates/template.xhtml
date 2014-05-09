@@ -11,11 +11,13 @@
 	<ui:insert name="styles" />
 </h:head>
 <h:body>
-	<h:panelGrid columns="3" width="100%" columnClasses="sidebar,linha,content">
+	<h:panelGrid columns="2" width="100%" columnClasses="sidebar,content">
 		<h:panelGroup id="sidebar" layout="block">
 			<ui:include src="menu.xhtml" />
 		</h:panelGroup>
+		<ui:remove>
 		<h:panelGroup id="linha" style="min-height: 400px;" layout="block"/>
+		</ui:remove>
 		<h:panelGroup id="content" layout="block">
 			<ui:insert name="content">Main Content</ui:insert>
 		</h:panelGroup>

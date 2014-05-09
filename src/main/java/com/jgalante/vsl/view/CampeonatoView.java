@@ -8,14 +8,15 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.model.DualListModel;
 
+import com.jgalante.vsl.entity.BaseEntity;
 import com.jgalante.vsl.entity.Campeonato;
 import com.jgalante.vsl.entity.Grupo;
 import com.jgalante.vsl.entity.Participante;
@@ -29,7 +30,7 @@ import com.jgalante.vsl.util.Estado;
 
 @Named("campeonato")
 @ViewScoped
-public class CampeonatoView extends BaseView<Campeonato> {
+public class CampeonatoView extends CrudView {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -49,7 +50,9 @@ public class CampeonatoView extends BaseView<Campeonato> {
 	private boolean sorteia;
 
 	@PostConstruct
-	public void inicializa() {
+	@Override
+	public void init() {
+		super.init();
 		
 		exibirSelecionaParticipantes = false;
 		usuarios = null;
@@ -59,7 +62,14 @@ public class CampeonatoView extends BaseView<Campeonato> {
 
 		alteraTipoCampeonato(TipoCampeonato.GRUPO.getId());
 		
-//		setQueryBusca("SELECT c FROM Campeonato c JOIN FETCH c.participantes ORDER BY c.nome");
+		setJoinClause("LEFT JOIN FETCH o.tipoCampeonato LEFT JOIN FETCH o.participantes");
+		
+		
+	}
+	
+	@Override
+	protected <T extends BaseEntity> T verifyCrudPage(String page) {
+		return super.verifyCrudPage("Campeonato");
 	}
 	
 	@Override
@@ -99,10 +109,12 @@ public class CampeonatoView extends BaseView<Campeonato> {
 				Collections.shuffle(usuarios.getTarget());
 			}
 			
-			if (getEntidade().getTipoCampeonato().equals(TipoCampeonato.MATA_MATA)){
+			Campeonato entidade = (Campeonato) getEntidade();
+			
+			if (entidade.getTipoCampeonato().equals(TipoCampeonato.MATA_MATA)){
 				// Define os participantes
 				for (Integer i = 0; i < qtdParticipantes; i++){
-					participantes.add(new Participante(getEntidade(),
+					participantes.add(new Participante(entidade,
 							usuarios.getTarget().get(i), 
 							times.getTarget().get(i)));
 				}
@@ -111,10 +123,10 @@ public class CampeonatoView extends BaseView<Campeonato> {
 				Collections.shuffle(participantes);
 				
 			}else{
-				Integer qtdParticipantesPorGrupo = qtdParticipantes / getEntidade().getQtdGrupos();
+				Integer qtdParticipantesPorGrupo = qtdParticipantes / entidade.getQtdGrupos();
 				
 				// Cria os grupos
-				for (Integer i = 0; i < getEntidade().getQtdGrupos(); i++) {
+				for (Integer i = 0; i < entidade.getQtdGrupos(); i++) {
 					grupos.add(new Grupo(Character.toString((char)(i+65))));
 				}
 				
@@ -128,7 +140,7 @@ public class CampeonatoView extends BaseView<Campeonato> {
 					if (i == grupos.size() - 1)
 						qtdParticipantesPorGrupo = qtdParticipantes - (qtdParticipantesPorGrupo * i);
 					for (Integer j = 0; j < qtdParticipantesPorGrupo; j++, posicao++){
-						participantes.add(new Participante(getEntidade(), grupos.get(i),
+						participantes.add(new Participante(entidade, grupos.get(i),
 								usuarios.getTarget().get(posicao), 
 								times.getTarget().get(posicao)));
 					}
@@ -137,7 +149,7 @@ public class CampeonatoView extends BaseView<Campeonato> {
 				
 			}
 			
-			getEntidade().setParticipantes(new HashSet<Participante>(participantes));
+			entidade.setParticipantes(new HashSet<Participante>(participantes));
 			geraPartidas();
 	
 			try {
@@ -164,9 +176,14 @@ public class CampeonatoView extends BaseView<Campeonato> {
 	
 	public void alteraTipoCampeonato(ValueChangeEvent evento){
 		Long tipoCampeonato = null;
-		tipoCampeonato = Long.parseLong(evento.getNewValue().toString());
+		try {
+			tipoCampeonato = Long.parseLong(evento.getNewValue().toString());
 
-		alteraTipoCampeonato(tipoCampeonato);
+			alteraTipoCampeonato(tipoCampeonato);
+		}catch (Exception e) {
+			
+		}
+
 	}
 	
 	private void alteraTipoCampeonato(Long idTipoCampeonato){
@@ -189,7 +206,10 @@ public class CampeonatoView extends BaseView<Campeonato> {
 							null));
 			result = false;
 		}
-		if(TipoCampeonato.MATA_MATA.equals(getEntidade().getTipoCampeonato())){
+		
+		Campeonato entidade = (Campeonato) getEntidade();
+		
+		if(TipoCampeonato.MATA_MATA.equals(entidade.getTipoCampeonato())){
 			// Verifica se a quantidade de participantes é uma potência de dois
 			// para poder montar as partidas do mata-mata.
 			if (!IsPotenciaDeDois(qtdParticipantes)){
@@ -203,9 +223,9 @@ public class CampeonatoView extends BaseView<Campeonato> {
 										null));
 				result = false;
 			}
-		}else if (TipoCampeonato.GRUPO.equals(getEntidade().getTipoCampeonato())) {
+		}else if (TipoCampeonato.GRUPO.equals(entidade.getTipoCampeonato())) {
 			// Verifica se a quantidade de participantes 
-			Integer qtdMinimaParticipantes = getEntidade().getQtdClassificados() * getEntidade().getQtdGrupos();
+			Integer qtdMinimaParticipantes = entidade.getQtdClassificados() * entidade.getQtdGrupos();
 			if (qtdMinimaParticipantes > qtdParticipantes){
 				FacesContext
 						.getCurrentInstance()
@@ -226,14 +246,16 @@ public class CampeonatoView extends BaseView<Campeonato> {
 
 		boolean result = true;
 		
+		Campeonato entidade = (Campeonato) getEntidade();
+		
 		// Atribui um valor padrão para o tipo de campeonato
-		if(TipoCampeonato.PONTOS_CORRIDOS.equals(getEntidade().getTipoCampeonato()))
-			getEntidade().setQtdGrupos(1);
-		else if(TipoCampeonato.MATA_MATA.equals(getEntidade().getTipoCampeonato()))
-			getEntidade().setQtdGrupos(0);
+		if(TipoCampeonato.PONTOS_CORRIDOS.equals(entidade.getTipoCampeonato()))
+			entidade.setQtdGrupos(1);
+		else if(TipoCampeonato.MATA_MATA.equals(entidade.getTipoCampeonato()))
+			entidade.setQtdGrupos(0);
 
 		// Válida os dados passados para gerar o campeonato
-		if (getEntidade().getNome() == null || getEntidade().getNome().isEmpty()){
+		if (entidade.getNome() == null || entidade.getNome().isEmpty()){
 			FacesContext
 			.getCurrentInstance()
 			.addMessage(
@@ -247,10 +269,10 @@ public class CampeonatoView extends BaseView<Campeonato> {
 		
 		
 		
-		if (TipoCampeonato.GRUPO.equals(getEntidade().getTipoCampeonato())) {
+		if (TipoCampeonato.GRUPO.equals(entidade.getTipoCampeonato())) {
 
 			// Verifica a quantidade de grupos informado. Deve existir mais de um 1 grupo 
-			if (getEntidade().getQtdGrupos() == null || getEntidade().getQtdGrupos() <= 1){
+			if (entidade.getQtdGrupos() == null || entidade.getQtdGrupos() <= 1){
 				FacesContext
 				.getCurrentInstance()
 				.addMessage(
@@ -260,7 +282,7 @@ public class CampeonatoView extends BaseView<Campeonato> {
 								"Quantidade de grupos deve ser maior do que 1!",
 								null));
 				result = false;
-			}else if (getEntidade().getQtdGrupos() > 25){
+			}else if (entidade.getQtdGrupos() > 25){
 				// Verifica se a quantida de grupos ultrapassou o limite de 25
 				FacesContext
 				.getCurrentInstance()
@@ -274,9 +296,9 @@ public class CampeonatoView extends BaseView<Campeonato> {
 			}
 			
 			// Verifica quantos times estariam classificados para o mata-mata
-			if ((getEntidade().getQtdClassificados() == null || getEntidade().getQtdClassificados() == 0) ||
-				getEntidade().getQtdGrupos() != null && getEntidade().getQtdGrupos() > 1 && 
-				!(IsPotenciaDeDois(getEntidade().getQtdGrupos()* getEntidade().getQtdClassificados()))){
+			if ((entidade.getQtdClassificados() == null || entidade.getQtdClassificados() == 0) ||
+				entidade.getQtdGrupos() != null && entidade.getQtdGrupos() > 1 && 
+				!(IsPotenciaDeDois(entidade.getQtdGrupos()* entidade.getQtdClassificados()))){
 				
 				FacesContext
 						.getCurrentInstance()
@@ -299,7 +321,7 @@ public class CampeonatoView extends BaseView<Campeonato> {
 	}
 	
 	public void geraPartidas() {
-		if(TipoCampeonato.MATA_MATA.equals(getEntidade().getTipoCampeonato())){
+		if(TipoCampeonato.MATA_MATA.equals(((Campeonato) getEntidade()).getTipoCampeonato())){
 			geraPartidasMataMata();
 		}else{
 			geraPartidasComGrupos();
@@ -307,7 +329,7 @@ public class CampeonatoView extends BaseView<Campeonato> {
 	}
 	
 	private void geraPartidasMataMata() {
-		Set<Participante> participantes = getEntidade().getParticipantes();
+		Set<Participante> participantes = ((Campeonato) getEntidade()).getParticipantes();
 		List<Participante> participantesClassificados = new ArrayList<Participante>();
 		Integer qtdPartidas = 0;
 		Partida terceiroLugar = new Partida();
@@ -382,13 +404,15 @@ public class CampeonatoView extends BaseView<Campeonato> {
 	private void geraPartidasComGrupos() {
 		List<Grupo> grupos = new ArrayList<Grupo>();
 		
-		if (TipoCampeonato.GRUPO.equals(getEntidade().getTipoCampeonato())){
-			grupos = negocioDao.listarGruposCampeonato(getEntidade().getId());
+		Campeonato entidade = (Campeonato) getEntidade();
+		
+		if (TipoCampeonato.GRUPO.equals(entidade.getTipoCampeonato())){
+			grupos = negocioDao.listarGruposCampeonato(entidade.getId());
 		}else
 			grupos.add(new Grupo("A"));
 
 		for (Grupo grupo : grupos) {
-			Set<Participante> participantes = getEntidade().getParticipantes(); //listarPorGrupo(grupo.getId());
+			Set<Participante> participantes = entidade.getParticipantes(); //listarPorGrupo(grupo.getId());
 			System.out.println(grupo.getDescricao());
 			for (int i = 0; i < participantes.size(); i++) {
 				Participante mandante = (Participante) participantes.toArray()[i];
@@ -429,7 +453,7 @@ public class CampeonatoView extends BaseView<Campeonato> {
 		alterar();
 		setEstado(TABELA);
 				
-		if (getEntidade().getTipoCampeonato().equals(TipoCampeonato.GRUPO)){ 
+		if (((Campeonato) getEntidade()).getTipoCampeonato().equals(TipoCampeonato.GRUPO)){ 
 			grupos = negocioDao.listarGruposCampeonato(getEntidade().getId());
 			for (Grupo grupo : grupos) {
 				geraTabelaDeGrupos(grupo);

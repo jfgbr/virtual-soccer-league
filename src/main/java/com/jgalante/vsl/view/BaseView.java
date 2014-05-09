@@ -27,6 +27,8 @@ public abstract class BaseView<T extends BaseEntity> implements Serializable{
 	private Long id;
 	
 	private T entidade;
+	
+	private Class<? extends BaseEntity> classeEntidade;
 
 	@Inject
 	protected BaseDao baseDao;
@@ -51,6 +53,10 @@ public abstract class BaseView<T extends BaseEntity> implements Serializable{
 		return entidade;
 	}
 
+	public void setEntidade(T entidade) {
+		this.entidade = entidade;
+	}
+
 	protected T buscaEntidade() {
 		if (isIdDisponivel()) {
 			return carregaEntidade();
@@ -59,17 +65,19 @@ public abstract class BaseView<T extends BaseEntity> implements Serializable{
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	protected T criaEntidade(){
 		try {
-			return getTipoClasse().newInstance();
+			return (T) getClasseEntidade().newInstance();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	protected T carregaEntidade(){
-		return baseDao.getEntidade(getTipoClasse(), getId());
+		return (T) baseDao.getEntidade(getClasseEntidade(), getId());
 	}
 	
 	protected void limpaEntidade(){
@@ -136,8 +144,11 @@ public abstract class BaseView<T extends BaseEntity> implements Serializable{
 	}
 
 	public void alterar() {
-		estado = Estado.ALTERAR;
-		setId(((BaseEntity) dataModel.getRowData()).getId());
+		setEstado(Estado.ALTERAR);
+		entidade = (T) getDataModel().getRowData();
+		setId(entidade.getId());
+//		baseDao.refresh(entidade);
+//		setId(((BaseEntity) dataModel.getRowData()).getId());
 		entidade = carregaEntidade();
 //		ViewUtil.redirect(PATH
 //				+ getTipoClasse().getSimpleName().toLowerCase()
@@ -168,11 +179,16 @@ public abstract class BaseView<T extends BaseEntity> implements Serializable{
 	}
 
 	@SuppressWarnings("unchecked")
-	private Class<T> getTipoClasse() {
-		ParameterizedType parameterizedType = (ParameterizedType) getClass()
-				.getGenericSuperclass();
-		return (Class<T>) parameterizedType.getActualTypeArguments()[0];
+	private Class<? extends BaseEntity> getClasseEntidade() {
+		if (classeEntidade == null) {
+			ParameterizedType parameterizedType = (ParameterizedType) getClass()
+					.getGenericSuperclass();
+			classeEntidade = (Class<T>) parameterizedType.getActualTypeArguments()[0];
+		}
+		return classeEntidade;
 	}
+	
+	
 
 	public LazyDataModel<T> getDataModel() {
 		if (dataModel == null) {
@@ -182,7 +198,7 @@ public abstract class BaseView<T extends BaseEntity> implements Serializable{
 				public int getRowCount(){
 					if (mudouBusca){
 						if (queryBusca == null)
-							setTotal(baseDao.totalRegistros(getTipoClasse().getSimpleName()));
+							setTotal(baseDao.totalRegistros(getClasseEntidade().getSimpleName()));
 						else
 							setTotal(baseDao.totalRegistros(queryBusca));
 						mudouBusca = false;
@@ -219,7 +235,7 @@ public abstract class BaseView<T extends BaseEntity> implements Serializable{
 	@SuppressWarnings("unchecked")
 	protected List<T> buscaPaginada(int first, int pageSize){
 		if (queryBusca == null){
-			return (List<T>) baseDao.buscaPaginada(getTipoClasse(), first, pageSize, getOrdenacao());
+			return (List<T>) baseDao.buscaPaginada(getClasseEntidade(), first, pageSize, getOrdenacao());
 		}else{
 			return (List<T>) baseDao.buscaPaginada(queryBusca, first, pageSize);
 		}
@@ -228,8 +244,12 @@ public abstract class BaseView<T extends BaseEntity> implements Serializable{
 	@SuppressWarnings("unchecked")
 	public List<T> getListaEntidades() {
 		if (listaEntidades == null)
-			listaEntidades = (List<T>) baseDao.getListaEntidades(getTipoClasse(), getOrdenacao());
+			listaEntidades = (List<T>) baseDao.getListaEntidades(getClasseEntidade(), getOrdenacao());
 		return listaEntidades;
+	}
+	
+	public void setListaEntidades(List<T> listaEntidades) {
+		this.listaEntidades = listaEntidades;
 	}
 
 	public String getQueryBusca() {
@@ -241,6 +261,11 @@ public abstract class BaseView<T extends BaseEntity> implements Serializable{
 		this.queryBusca = QueryBusca;
 	}
 
+	public void setJoinClause(String joinClause) {
+		mudouBusca = true;
+		baseDao.setJoinClause(joinClause);
+	}
+	
 	protected String getOrdenacao(){
 		if (ordenacao == null){
 			ordenacao = "";
@@ -277,7 +302,7 @@ public abstract class BaseView<T extends BaseEntity> implements Serializable{
 	protected String getMessage(String key){
 		try{
 			return ResourceBundle.getBundle("MessageResources")
-					.getString(getTipoClasse().getSimpleName().toLowerCase() + "." + key);
+					.getString(getClasseEntidade().getSimpleName().toLowerCase() + "." + key);
 		}catch(MissingResourceException e){
 			return ResourceBundle.getBundle("MessageResources")
 					.getString("padrao." + key);
@@ -292,4 +317,11 @@ public abstract class BaseView<T extends BaseEntity> implements Serializable{
 		this.estado = estado;
 	}
 
+	
+
+	public void setClasseEntidade(Class<? extends BaseEntity> classeEntidade) {
+		this.classeEntidade = classeEntidade;
+	}
+
+	
 }

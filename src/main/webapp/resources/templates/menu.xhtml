@@ -12,7 +12,21 @@
 			<p:commandButton action="/pages/pais?faces-redirect=true" value="País" style="width:100px">
 				<f:setPropertyActionListener target="#{flash.crudPage}" value="Pais"/>
 			</p:commandButton>
+			<p:commandButton action="/pages/time?faces-redirect=true" value="Time" style="width:100px">
+				<f:setPropertyActionListener target="#{flash.crudPage}" value="Time"/>
+			</p:commandButton>
+			<p:commandButton action="/pages/participante?faces-redirect=true" value="Participante" style="width:100px">
+				<f:setPropertyActionListener target="#{flash.crudPage}" value="Participante"/>
+			</p:commandButton>
+			<p:commandButton action="/pages/partida?faces-redirect=true" value="Partida" style="width:100px">
+				<f:setPropertyActionListener target="#{flash.crudPage}" value="Partida"/>
+			</p:commandButton>
+			<p:commandButton action="/pages/campeonato?faces-redirect=true" value="Campeonato" style="width:100px">
+				<f:setPropertyActionListener target="#{flash.crudPage}" value="Campeonato"/>
+			</p:commandButton>
 		</h:panelGrid>
+		
+	<ui:remove>
 	<p:menu style="width:200px" >
 		<p:submenu>
 			<p:menuitem value="Usuário" url="/pages/usuario" >
@@ -43,5 +57,6 @@
 		</p:submenu>
 		
 	</p:menu>
+	</ui:remove>
 	</h:form>
 </ui:composition>

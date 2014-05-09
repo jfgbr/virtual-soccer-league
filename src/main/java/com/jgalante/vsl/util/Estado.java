@@ -48,6 +48,9 @@ public class Estado {
 	public boolean isExcluir(){
 		return this.equals(EXCLUIR);
 	}
+	
+	public void setIncluir(boolean incluir) {
+	}
 
 	@Override
 	public int hashCode() {

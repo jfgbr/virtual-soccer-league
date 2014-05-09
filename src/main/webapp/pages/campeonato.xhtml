@@ -4,35 +4,128 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
-	template="/WEB-INF/templates/template.xhtml">
+	xmlns:v="http://xmlns.jcp.org/jsf/composite/components"
+	template="/resources/templates/template.xhtml">
 	<ui:define name="styles">
 		<style type="text/css">
-			.c1{
-				width: 250px;
-			}
-			.c2{
-				width: 250px;
-			}
-            .classificados {
-                background-color: #6CE26C !important;
-                background-image: none !important;
-                color: #000000 !important;
-            }
+		.c1 {
+			width: 250px;
+		}
+		
+		.c2 {
+			width: 250px;
+		}
+		
+		.classificados {
+			background-color: #6CE26C !important;
+			background-image: none !important;
+			color: #000000 !important;
+		}
 		</style>
 	</ui:define>
 	<ui:define name="content">
 		<p:growl id="growl" life="2000" showDetail="false" />
-		<h:panelGroup rendered="#{campeonato.estado.incluir or campeonato.estado.alterar}">
-			<ui:include src="/pages/campeonatoEditar.xhtml" />
+
+		<v:crudPage id="crud-campeonato" formId="frm-campeonato"
+			view="#{campeonato}" headerPanel="Campeonato"
+			headerDialog="Novo Campeonato">
+
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="Nome" />
+				</f:facet>
+				<h:outputText value="#{item.nome}" />
+			</p:column>
+
+			<p:column style="width:30px;text-align:center">
+				<f:facet name="header">
+					<h:outputText value="Tipo de Campeonato" />
+				</f:facet>
+				<h:outputText value="#{item.tipoCampeonato.descricao}" />
+			</p:column>
+
+			<p:column style="width:30px;text-align:center">
+				<f:facet name="header">
+					<h:outputText value="Quantidade de grupos" />
+				</f:facet>
+				<h:outputText value="#{item.qtdGrupos}"
+					rendered="#{!(item.qtdGrupos eq 0)}" />
+				<h:outputText value="-"
+					rendered="#{item.qtdGrupos eq 0 or empty item.qtdGrupos}" />
+			</p:column>
+
+			<p:column style="width:30px;text-align:center">
+				<f:facet name="header">
+					<h:outputText value="Quantidade de participantes" />
+				</f:facet>
+				<h:outputText value="#{item.qtdParticipantes}"
+					rendered="#{!(item.qtdParticipantes eq 0)}" />
+				<p:commandButton icon="ui-icon ui-icon-plusthick"
+					rendered="#{item.qtdParticipantes eq 0}"
+					action="#{campeonato.alterar}" style="font-size:6pt;" ajax="true"
+					process="@this" update=":grp-seleciona-participantes"
+					title="Adicionar participantes" />
+			</p:column>
+
+			<p:column styleClass="btnColunaAcoes">
+				<p:commandButton action="#{campeonato.gerarTabela}" ajax="true"
+					update=":grp-tabela"
+					icon="ui-icon ui-icon-clipboard" style="font-size:6pt;"
+					rendered="#{not empty item.participantes}" title="Tabela do Campeonato" />
+				<p:commandButton action="#{campeonato.remover}" update=":crud-campeonato:frm-campeonato:data-table"
+					icon="ui-icon ui-icon-closethick" style="font-size:6pt;"
+					rendered="#{empty item.participantes}"
+					title="Excluir Campeonato" />
+			</p:column>
+
+			<f:facet name="dialogFields">
+				<h:panelGrid columns="2" columnClasses="c1, c2">
+					<h:outputText value="Nome" />
+					<h:inputText value="#{campeonato.entidade.nome}"
+						disabled="#{campeonato.exibirSelecionaParticipantes}" />
+
+					<h:outputText value="Tipo de Campeonato" />
+					<h:selectOneMenu value="#{campeonato.entidade.tipoCampeonato.id}"
+						valueChangeListener="#{campeonato.alteraTipoCampeonato}"
+						disabled="#{campeonato.exibirSelecionaParticipantes}">
+						<f:selectItems value="#{campeonato.lstTipoCampeonato}" var="tc"
+							itemLabel="#{tc.descricao}" itemValue="#{tc.id}" />
+						<f:ajax event="change" render="pnlGrupos" />
+					</h:selectOneMenu>
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2" id="pnlGrupos" columnClasses="c1, c2">
+					<h:outputText value="Quantidade de grupos"
+						rendered="#{campeonato.exibirDadosGrupo}" />
+					<p:inputMask mask="?9" maxlength="1" size="1"
+						value="#{campeonato.entidade.qtdGrupos}"
+						rendered="#{campeonato.exibirDadosGrupo}"
+						disabled="#{campeonato.exibirSelecionaParticipantes}" />
+
+					<h:outputText value="Participantes Classificados por Grupo"
+						rendered="#{campeonato.exibirDadosGrupo}"
+						disabled="#{campeonato.exibirSelecionaParticipantes}" />
+					<p:inputMask mask="?9" maxlength="1" size="1"
+						value="#{campeonato.entidade.qtdClassificados}"
+						rendered="#{campeonato.exibirDadosGrupo}"
+						disabled="#{campeonato.exibirSelecionaParticipantes}" />
+				</h:panelGrid>
+			</f:facet>
+			
+
+		</v:crudPage>
+
+	
+		<h:panelGroup id="grp-seleciona-participantes" layout="block" >
+			<h:form id="frm-seleciona-participantes" rendered="#{campeonato.seleciona}">
+				<ui:include src="/pages/campeonatoParticipantes.xhtml" />
+			</h:form>
 		</h:panelGroup>
-		<h:panelGroup rendered="#{campeonato.estado.listar}">
-			<ui:include src="/pages/campeonatoListar.xhtml" />
-		</h:panelGroup>
-		<h:panelGroup rendered="#{campeonato.seleciona}">
-			<ui:include src="/pages/campeonatoParticipantes.xhtml" />
-		</h:panelGroup>
-		<h:panelGroup rendered="#{campeonato.tabela}">
-			<ui:include src="/pages/campeonatoTabela.xhtml" />
+		<h:panelGroup id="grp-tabela" layout="block">
+			<h:form id="frm-tabela" rendered="#{campeonato.tabela}">
+				<ui:include src="/pages/campeonatoTabela.xhtml" />
+			</h:form>
 		</h:panelGroup>
 	</ui:define>
 </ui:composition>
